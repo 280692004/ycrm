@@ -29,11 +29,11 @@ public class DwrScriptSessionManagerUtil extends DwrServlet {
 
 				HttpSession session = WebContextFactory.get().getSession();
 
-				String userId = (String) session.getAttribute("userId");
+				String userName = (String) session.getAttribute("userName");
 
 				System.out.println(">>>>>>>>>a ScriptSession is created!");
 
-				ev.getSession().setAttribute("userId", userId);
+				ev.getSession().setAttribute("userName", userName);
 
 			}
 

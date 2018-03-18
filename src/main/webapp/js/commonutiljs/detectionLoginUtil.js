@@ -1,7 +1,13 @@
 var iCount = null;
 
+function initDwr(){
+	dwr.engine.setActiveReverseAjax(true);
+	dwr.engine.setNotifyServerOnPageUnload(true);
+	onPageLoad();
+}
+
 function onPageLoad(){  
-    var userId = '${user.userId}';  
+    var userId = $("#var_userID").val();  
 	MessagePush.onPageLoad(userId);  
 } 
 
@@ -78,6 +84,8 @@ function doLogin() {
 					doInitUserImageAndName(result.datas);
 					$("#loginMondal").modal('hide');	
 					doReset();
+					//重新初始化initDwr
+					initDwr();
 					return;
                 } 
 			 }else{ 
@@ -86,6 +94,7 @@ function doLogin() {
             }
         }
     });
+    
 } 
 
 /**
@@ -103,8 +112,7 @@ function doOpInitUserInfo(){
 	}
 	//更新登录用户头像
 	doInitUserImageAndName(aclUser);
-	//重新初始化登录对象
-	onPageLoad();
+	
 }
 
 /**
@@ -124,11 +132,10 @@ function doInitUserImageAndName(aclUser){
 //推送信息    
 function showMessage(messageresult){
 	var obj = JSON.parse(messageresult);
-	alert(obj.sendType);
 	if (0 == obj.sendType){
 	    swal({
 	        title: obj.message.replace('time',obj.sendTime),
-            text: '若非您自己操作,为确保安全隐患，请及时修改密码！</br>更新密码请点击<a onclick="funUpdatePassWord()">☞修改密码</a>',
+	        text: "若非您自己操作,为确保安全隐患，请及时修改密码！", 
 	        closeOnConfirm: false
 	    },
 	    function () {

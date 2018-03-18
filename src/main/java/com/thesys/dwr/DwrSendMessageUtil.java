@@ -10,7 +10,7 @@ import org.directwebremoting.ScriptSessionFilter;
 import com.thesys.util.JsonUtil;
 
 /**
- * Dwr 消息推送测试类
+ * Dwr 消息推送
  * @author Administrator
  *
  */
