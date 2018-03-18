@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesys.allmodule.capitalflow.capitalflow.dao.CapitalFlowMapper">
+	<!-- 分页查询公共方法 -->
+	<sql id="commonWhereSql">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if	test="entity.billdate != null and entity.billdate != ''">
+				a.billdate >= #{entity.billdate}
+		    </if>
+			<if	test="entity.end_billdate != null and entity.end_billdate != ''">
+				and #{entity.end_billdate} >= a.billdate
+		    </if>
+		    <if	test="entity.capitalFlowTypeCode != null and entity.capitalFlowTypeCode != ''">
+				a.capitalFlowTypeCode = #{entity.capitalFlowTypeCode}
+		    </if>
+			<if	test="entity.user != null and entity.user != ''">
+				and a.user like concat('%',#{entity.user},'%')
+		    </if>
+		</trim>
+	</sql>
+	<!-- 查询数据总页数 模糊-->
+	<select id="findFlexiPageCapitalFlowCount" resultType="Long">
+		select count(0) from f_capitalflow a
+		<include refid="commonWhereSql"></include>
+	</select>
+	<!-- 分页查询/不分页 -->
+	<select id="findFlexiPageCapitalFlows" resultType="CapitalFlow">
+		select a.* from f_capitalflow a 
+		<include refid="commonWhereSql"></include>
+		order by billdate,id
+		<if	test="flexiPageDto != null and flexiPageDto != ''">
+			limit #{flexiPageDto.seq},#{flexiPageDto.rp}
+	    </if>
+	</select>
+	
+	<insert id="doOpBatchAddEntity" parameterType="List">
+		INSERT INTO f_capitalflow (naturalId, version, createBy_id, createByName,createTime, lastModifyBy_id, lastModifyByName, 
+			lastModifyTime, billdate, capitalFlowTypeCode, unitCode, qty, unitprice, totalamount, user, summary)
+		<foreach collection="importDetails" item="item" index="index" open="(" close=")">
+			#{item.naturalId},0,#{item.createBy_id},#{item.createByName}, now(),#{item.lastModifyBy_id},
+			#{item.lastModifyByName},now(),#{item.billdate}, #{capitalFlowTypeCode},#{item.unitCode},#{item.qty},
+			#{item.unitprice},#{item.totalamount},#{item.user},#{item.summary}
+		</foreach>
+	</insert>
+	
+</mapper>

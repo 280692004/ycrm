@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.thesys.base.basemanager.baseparameter.parameterbasebeantype.dao.ParameterBaseBeanTypeMapper">
+
+	<select id="doOpCalNextSeq" parameterType="String" resultType="Integer">
+		select ifnull(max(ifnull(orderNo,0)),0)+1 as nextseq from
+		base_parameterbasebeantype where ifnull(parent_id,'')=#{parentid};
+	</select>
+	
+	<sql id="commonWhereSql">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if	test="parameterBaseBeanType.dtype != null and parameterBaseBeanType.dtype != ''">
+				a.dtype like concat('%',#{parameterBaseBeanType.dtype},'%')
+		    </if>
+			<if	test="parameterBaseBeanType.cname != null and parameterBaseBeanType.cname != ''">
+				and a.cname like concat('%',#{parameterBaseBeanType.cname},'%')
+		    </if>
+		    <if	test="parameterBaseBeanType.orderNo != null and parameterBaseBeanType.orderNo != ''">
+				and a.orderNo <![CDATA[ >= ]]> #{parameterBaseBeanType.orderNo}
+		    </if>
+			<if	test="parameterBaseBeanType.status != null and parameterBaseBeanType.status != ''">
+				and a.status=#{parameterBaseBeanType.status}
+		    </if>
+	    </trim>
+	</sql>
+	<!-- 查询数据总页数 模糊-->
+	<select id="doOpFindCountByPageLike" parameterType="ParameterBaseBeanType" resultType="Long">
+		SELECT count(0) FROM base_parameterbasebeantype a
+		<include refid="commonWhereSql"></include>
+	</select>
+	<!-- 分页查询 -->
+	<select id="doOpFindByPageLike" resultType="ParameterBaseBeanType">
+		SELECT a.* FROM base_parameterbasebeantype a
+		<include refid="commonWhereSql"></include>
+		order by a.orderNo
+		limit #{flexiPageDto.seq},#{flexiPageDto.rp}
+	</select>
+	
+	<!--更新判断约束前置条件-->
+	<select id="findCountByPropertyNeId" parameterType="ParameterBaseBeanType" resultType="Long">
+		select count(0) from base_parameterbasebeantype a
+		<trim prefix="where" prefixOverrides="and|or">
+			<if	test="parameterBaseBeanType.dtype != null and parameterBaseBeanType.dtype != ''">
+				a.dtype =#{parameterBaseBeanType.dtype}
+		    </if>
+			<if	test="parameterBaseBeanType.cname != null and parameterBaseBeanType.cname != ''">
+				and a.cname = #{parameterBaseBeanType.cname}
+		    </if>
+			<if	test="parameterBaseBeanType.status != null and parameterBaseBeanType.status != ''">
+				and a.status=#{parameterBaseBeanType.status}
+		    </if>
+		    <if test="parameterBaseBeanType.id != null and parameterBaseBeanType.id != ''">
+	    	  	and id !=#{parameterBaseBeanType.id}
+		    </if>
+		</trim>
+	</select>
+	
+	<!-- 根据ID查询参数类型 -->
+	<select id="findParameterBaseBeanTypeById" parameterType="String" resultType="ParameterBaseBeanType">
+		select a.* from base_parameterbasebeantype a where a.id=#{id};
+	</select>
+	
+	<select id="doOpFindQqByParameterBaseBeanType" resultType="ParameterBaseBeanType">
+		select a.* from base_parameterbasebeantype a where a.dtype=#{entity.dtype} and a.cname=#{entity.cname};
+	</select>
+	
+	<select id="findCountByOrderNo" resultType="Integer">
+		select COUNT(0) from base_parameterbasebeantype a where a.orderNo = #{orderNo};
+	</select>
+	
+	<!-- 更新参数类型状态 -->
+	<update id="updateParameterBaseBeanTypeStatus">
+		update base_parameterbasebeantype set status = #{status} where id = #{id};
+	</update>
+
+</mapper>

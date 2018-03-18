@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+<!--[if IE 9]><html class="no-js ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"><!--<![endif]--><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-stand|ie-comp">
+<title>编辑资金流水账</title>
+
+<link href="/css/allpagecss/capitalflowcss/common.css" rel="stylesheet" type="text/css">
+<link href="/css/allpagecss/capitalflowcss/ui.css" rel="stylesheet">
+<link href="/css/allpagecss/capitalflowcss/capitalflowcss.css" rel="stylesheet" type="text/css">
+<link href="/css/bootstrap/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+</head>
+<body class="page-voucher">
+	
+<div class="wrapper">
+  <div class="mod-toolbar-bottom" id="toolTop"> 
+	    <div class="voucher_top">
+	      <div class="mark_wrap" align="right">
+	        <span class="date_wrap">
+	        	<div class="col-md-6" style="margin: 0px; padding: 0px;">
+	        		<label class="" style="margin-top: 10px;font-size: 18px;">记账日期:</label>
+	        	</div>
+	        	<div class="col-md-6 md" style="margin: 0px; padding: 0px;">
+	            <input id="varBilldate" name="capitalFlow.billdate" class="laydate-icon form-control layer-date">
+	        	</div>
+	        </span>
+	      </div>
+	      <div class="tit_wrap">
+	        <h1 class="voucher_tit">记账凭证</h1>
+	        <input type="hidden" id="vch_id" name="capitalFlow.id"/>
+	      </div>
+	    </div>
+	    <div class="col-sm-12">
+	        <div class="example-wrap">
+	            <table data-toggle="table" data-card-view="true" data-mobile-responsive="true" class="voucher" id="voucher">
+	                <thead>
+	                    <tr>
+	                    		<th style="border: none;"><a class="varAddRowBut glyphicon glyphicon-plus" aria-hidden="true"  style="margin-right: 5px;" onclick="doOpAddRow()"></a></th>
+	                        <th class="col_summary">摘要</th>
+								          <th class="col_amounttype">资金类型</th>
+								          <th class="col_unit">单位</th>
+								          <th class="col_qty">数量</th>
+								          <th class="col_money"><strong class="tit">单价</strong>
+								            <div class="money_unit"> <span>亿</span> <span>千</span> <span>百</span> <span>十</span> <span>万</span> <span>千</span> <span>百</span> <span>十</span> <span>元</span> <span>角</span> <span class="last">分</span> </div>
+								          </th>
+								          <th class="col_money col_totalamount"> <strong class="tit">总金额</strong>
+								            <div class="money_unit"> <span>亿</span> <span>千</span> <span>百</span> <span>十</span> <span>万</span> <span>千</span> <span>百</span> <span>十</span> <span>元</span> <span>角</span> <span class="last">分</span> </div>
+								          </th>
+	                    </tr>
+	                </thead>
+		              <tbody id="details">
+		                	<tr class="h35" >
+		                		<td style="border: none;">
+		                			<input id="varRowId" type="hidden" name="capitalFlow.id"/>
+		                		</td>
+							         	<td align="left" class="col_summary">
+							         		<div class="cell_val">
+							         			<textarea class="form-control val_summary w280" name="capitalFlow.summary" style="resize:none;height: 68px;" placeholder="填写评论..."></textarea>
+							         		</div>
+							         	</td>
+							         	<td align="center" class="col_amounttype">
+							         		<div class="cell_val input-group">
+                            <select name="capitalFlow.capitalFlowTypeCode" id="var_capitalFlow_capitalFlowTypeCode" data-placeholder="选择资金类型..." class="chosen-select capitalFlowTypeCode w100" tabindex="2">
+                                <option value="expenditure">支出</option>
+                                <option value="gainings">收入</option>
+                            </select>
+                        	</div>
+							         	</td>
+							         	<td align="center" class="col_unit">
+							         		<div class="cell_val">
+							         			<select name="capitalFlow.unitCode" id="var_capitalFlow_unit" data-placeholder="选择单位..." class="chosen-select varUnit w100" tabindex="2">
+                                <option value="笔" hassubinfo="true">笔</option>
+                                <option value="次" hassubinfo="true">次</option>
+                                <option value="餐" hassubinfo="true">餐</option>
+                                <option value="支" hassubinfo="true">支</option>
+                                <option value="斤" hassubinfo="true">斤</option>
+                                <option value="件" hassubinfo="true">件</option>
+                            </select>
+							         		</div>
+							         	</td>
+							         	<td align="center" class="col_qty">
+							         		<div class="cell_val">
+							         			<input type="text" class="form-control w70 varQty" name="capitalFlow.qty">
+							         		</div>
+							         	</td>
+							          <td class="col_unitprice moneytdbackground" data-edit="money">
+							          	<div class="cell_val">
+							          		<input type="hidden" name="capitalFlow.unitprice" class="moneyinput unitprice_val" maxlength="11"/>
+							          		<span class="unitprice_span">00</span>
+							         	 	</div>
+							          </td>
+							          
+							          <td class="col_totalamount moneytdbackground" data-edit="money">
+							          	<div class="cell_val">
+							          		<input type="hidden" name="capitalFlow.totalamount" class="moneyinput totalamount_val" maxlength="11"/>
+							          		<span class="totalamount_span">00</span>
+							         	 	</div>
+							          </td>
+							          
+							          <td style="border: none;">
+		                			<a class="vardelbut glyphicon glyphicon-trash" style="margin-left: 5px;" onclick="doOpDeleteRow(this)" maxlength="11"></a>
+		                		</td>
+							        </tr>
+		              </tbody>
+	            </table>
+	        </div>
+			    <div align="right">
+			      	制单人：<span id="vch_creator" style="margin-right: 10px;"></span>
+			    </div>
+	    </div>
+	    <div align="center">
+	    	<a class="ui-btn ui-btn-sp" id="closeIframe">关闭</a><a class="ui-btn" id="savebtn">保存</a>
+	    </div>
+	</div>
+</div>
+
+<!-- 全局变量 -->
+<script src="/jquery/jquery.min.js?v=2.1.4"></script>
+<script src="/jquery/jquery.json.min.js"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<!-- layer -->
+<script src="/js/plugins/layer/layer.min.js"></script>
+<!-- Chosen -->
+<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<!-- Sweet alert -->
+<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- form -->
+<script src="/js/commonutiljs/form.js"></script>
+<script src="/js/commonutiljs/formfill.js"></script>
+
+<script src="/js/allpagejs/capitalflow/edit_capitalflow.js"></script>
+
+</body>

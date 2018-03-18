@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="ycrm"
+  id="myeclipse.1517404155919"
+  context-root="/ycrm"
+  j2ee-spec="1.7"
+  archive="ycrm.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

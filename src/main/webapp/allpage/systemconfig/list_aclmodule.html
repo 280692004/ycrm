@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Y 系统模块设置</title>
+
+    <link rel="shortcut icon" href="/images/Y.gif" /> 
+    <link href="/css/bootstrap/bootstrap.min.css?v=3.3.6" rel="stylesheet" />
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet" />
+
+    <!-- jqgrid-->
+    <link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet" />
+
+    <link href="/css/animate.css" rel="stylesheet" />
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet" />
+
+    <style>
+        .ui-jqgrid-labels .ui-th-column{
+        	text-align: center;
+        	background-color:#87CEFF;
+        }
+        #alertmod_table_list {
+		    top: 10px !important;
+		}
+    </style>
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox ">
+                    <div align="center" class="ibox-title">
+                        <h5>系统模块</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="jqGrid_wrapper">
+                        	<div style="margin-bottom: 3px;">
+	                        	<button type="button" class="btn btn-info" data-toggle="modal" data-target="#aclmoduleSearchMondal">
+		                         	查询：<i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+		                        </button>
+		                        <span id="var_otherOperationButton"></span>
+                        	</div>
+                            <table id="table_list"></table>
+                            <div id="pager_list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+      	<div class="modal"  id="aclmoduleSearchMondal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content animated flipInY">
+                    <div class="modal-header h25 text-center">
+                        <strong style="font-size: 18px;">初始化搜索条件</strong>
+                    </div>
+                    <div class="modal-body" style="height: 300px;">
+                    	<form class="form-horizontal" id="searchForm">
+			        		<div class="ibox-content">
+			                	<input type="hidden" name="pageSize" id="var_pageSize"/>
+			                	<input type="hidden" name="pageNumber" id="var_pageNumber"/>
+			                    <div class="form-group">
+			                        <div class="col-sm-4">
+			                        	<label class="control-label">父级：</label>
+			                            <input type="text" name="aclModule.parent.cname" placeholder="模块父级" class="form-control"/>
+			                        </div>
+			                       	<div class="col-sm-4">
+			                       	<label class="control-label">编码：</label>
+			                            <input type="text" name="aclModule.code" placeholder="模块编码" class="form-control"/>
+			                        </div>
+			                       	<div class="col-sm-4">
+			                       		<label class="control-label">名称：</label>
+			                            <input type="text" name="aclModule.cname" min="1" max="6" placeholder="模块名称" class="form-control">
+			                        </div>
+			                    </div>
+			                    <div class="form-group">
+			                        <div class="col-sm-4">
+			                        	<label class="control-label">访问URL：</label>
+			                            <input type="text" name="aclModule.url" min="1" max="6" placeholder="访问URL" class="form-control">
+			                        </div>
+			                        <div class="col-sm-4">
+			                        	<label class="control-label">状态：</label>
+			                            <select class="form-control m-b" name="aclModule.status">
+			                            	<option value="">全部</option>
+			                                <option value="N">待定</option>
+			                                <option value="Y">有效</option>
+			                                <option value="C">取消</option>
+			                            </select>
+			                        </div>
+			                    </div>
+			            	</div>
+				            <div class="form-group">
+				            	<div class="col-md-4"></div>
+				            	<div class="col-md-3">
+				            		<button id="var_searchbtn" class="btn btn-primary btn-rounded" style="width: 120px;" onclick="doOpQueryDatas()" type="button">查 询</button>
+				            	</div>
+				            	<div class="col-md-3">
+				            		<button class="btn btn-default btn-rounded" style="width: 120px;" onclick="doOpCloseSearchMondal('aclmoduleSearchMondal')" type="button">关 闭</button>
+				            	</div>
+				            </div>
+			            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="/jquery/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/bootstrap/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- Peity -->
+    <script src="/js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- jqGrid -->
+    <script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+    <script src="/js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+
+	<!-- layer -->
+	<script src="/js/plugins/layer/layer.min.js"></script>
+	<!--
+    	作者：yanjiaqi@sina.com
+    	时间：2018-02-08
+    	描述：查询是否已经超时
+    -->
+    <script src="/js/commonutiljs/detectionLoginUtil.js"></script>
+    
+    <!-- 自定义js -->
+	<script src="/js/commonutiljs/form.js"></script>
+    <script src="/js/content.js?v=1.0.0"></script>
+    <script src="/js/allpagejs/jqgridpageparamutil.js"></script>
+	<script src="/js/allpagejs/systemconfig/list_aclmodule.js"></script>
+</body>
+
+</html>

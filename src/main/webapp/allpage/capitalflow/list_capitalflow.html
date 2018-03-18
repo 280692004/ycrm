@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Y 我的资金流</title>
+
+    <link href="/css/bootstrap/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <!-- jqgrid-->
+    <link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+
+    <style>
+        #alertmod_table_list {
+            top: 900px !important;
+        }
+        .ui-jqgrid-labels .ui-th-column{
+        	text-align: center;
+        	background-color:#87CEFF;
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg">
+	<input type="hidden" id="varIframeIndex"/>
+	<input type="hidden" id="varDotype"/>
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>我的资金流</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="jqGrid_wrapper">
+                        	<div style="margin-bottom: 3px;">
+                        		<button type="button" class="btn btn-info" data-toggle="modal" data-target="#capitalFlowSearchMondal">
+		                         	过滤：<i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+		                        </button>
+	                        	<button type="button" class="btn btn-outline btn-default add_btn">
+		                         	新增：<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+		                        </button>
+		                        <button type="button" class="btn btn-outline btn-default edit_btn">
+		                         	修改：<i class="glyphicon glyphicon-edit" aria-hidden="true"></i>
+		                        </button>
+		                        <button type="button" class="btn btn-outline btn-default delete_btn">
+		                         	删除：<i class="glyphicon glyphicon-floppy-remove" aria-hidden="true"></i>
+		                        </button>
+                        	</div>
+                            <table id="table_list"></table>
+                            <div id="pager_list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="capitalFlowSearchMondal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header h25 text-center">
+                    <strong style="font-size: 18px;">初始化搜索条件</strong>
+                </div>
+                <div class="modal-body" style="height: 280px;">
+                	<form class="form-horizontal" id="searchForm">
+		        		<div class="ibox-content">
+		                	<input type="hidden" name="pageSize" id="var_pageSize"/>
+		                	<input type="hidden" name="pageNumber" id="var_pageNumber"/>
+		                    <div class="form-group">
+		                    	<div class="col-sm-1"></div>
+		                    	<div class="col-sm-5">
+		                       		<label class="control-label">业务日期[开始]：</label>
+		                       		<input placeholder="开始日期" name="capitalFlow.billdeta" class="form-control layer-date" id="start">
+		                        </div>
+		                        <div class="col-sm-5">
+		                        	<label class="control-label">业务日期[结束]：</label>
+		                       		<input placeholder="结束日期" name="capitalFlow.end_billdeta" class="form-control layer-date" id="end">
+		                        </div>
+		                    </div>
+		                    <div class="form-group">
+		                    	<div class="col-sm-1"></div>
+		                        <div class="col-sm-5">
+		                       		<label class="control-label">使用者：</label><br />
+		                       		<input type="text" style="width: 240px;" name="capitalFlow.user" placeholder="费用产生者" class="form-control"/>
+		                        </div>
+		                        <div class="col-sm-5">
+		                       		<label class="control-label">资金类型：</label>
+		                       		<select class="form-control m-b module_select" style="width: 240px;" name="capitalFlow.capitalFlowTypeCode">
+		                       			<option value="">全部</option>
+		                       			<option value="expenditure">支出</option>
+		                       			<option value="gainings">收入</option>
+		                            </select>
+		                        </div>
+		                    </div>
+		            	</div>
+			            <div class="form-group">
+			            	<div class="col-md-4"></div>
+			            	<div class="col-md-3">
+			            		<button id="var_searchbtn" class="btn btn-primary btn-rounded" style="width: 120px;" onclick="doOpQueryDatas()" type="button">查 询</button>
+			            	</div>
+			            	<div class="col-md-3">
+			            		<button class="btn btn-default btn-rounded" style="width: 120px;" onclick="doOpCloseSearchMondal('capitalFlowSearchMondal')" type="button">关 闭</button>
+			            	</div>
+			            </div>
+		            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- 全局js -->
+    <script src="/jquery/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/bootstrap/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- Peity -->
+    <script src="/js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- jqGrid -->
+    <script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+    <script src="/js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+
+	<!-- layer -->
+	<script src="/js/plugins/layer/layer.min.js"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	
+  	<!-- 自定义js -->
+    <script src="/js/content.js?v=1.0.0"></script>
+    <!--
+    	作者：yanjiaqi@sina.com
+    	时间：2018-02-08
+    	描述：查询是否已经超时
+    -->
+    <script src="/js/commonutiljs/detectionLoginUtil.js"></script>
+    <script src="/js/commonutiljs/form.js"></script>
+    <script src="/js/allpagejs/jqgridpageparamutil.js"></script>
+  	<script src="/js/allpagejs/capitalflow/list_capitalflow.js"></script>
+
+</body>
+
+</html>
