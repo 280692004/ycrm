@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+    http://www.springframework.org/schema/context   
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd    
+    http://www.springframework.org/schema/mvc   
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" >
+       <property name="converters">
+           <bean class="com.thesys.architecture.converter.dateconverter.DateConverter" /> 
+       </property>
+    </bean> 
+    									
+    
+ 	<mvc:annotation-driven conversion-service="conversionService"/>
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/checklogin"/>
+			<mvc:mapping path="/**.action*"/>			
+			<bean class="com.thesys.core.architecture.base.dispatcherservlet.URLInterceptor">
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>	 
+ 	<aop:aspectj-autoproxy proxy-target-class="true"  />
+ 	
+	<context:component-scan base-package="com.thesys">           
+ 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+ 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	</context:component-scan>  	
+	<mvc:default-servlet-handler/>
+
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list><value>text/html;charset=UTF-8</value></list>
+		</property>
+	</bean>
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="mappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	
+<bean id="viewResolver" class="com.thesys.core.service.impl.jspViewResolver">
+        <property name="defaultViewResolver" ref="beanNameViewResolver"/>
+        <property name="viewResolverMap">
+            <map>
+                <entry>
+                    <key>
+                        <set>
+                            <value>.jsp</value>
+                        </set>
+                    </key>
+                    <ref bean="jspViewResolver"/>
+                </entry>
+                <entry>
+                    <key>
+                        <set>
+                            <value>.htm</value>
+                        </set>
+                    </key>
+                    <ref bean="velocityViewResolver"/>
+                </entry>
+              
+            </map>
+        </property>
+    </bean>
+
+    
+    <bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/"/>
+        <property name="order" value="1" />
+    </bean>
+    
+    <!--  Velocity ViewResolver Configuration -->
+    <bean id="velocityViewResolver" class = "org.springframework.web.servlet.view.InternalResourceViewResolver">
+         <property name="order" value="0" />
+         <property name="prefix" value="/"/>
+         <property name="suffix" value=".html" />
+         <property name="contentType" value="text/html;charset=UTF-8" />
+         <property name="requestContextAttribute" value="req"/>
+    </bean>
+
+    
+   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+        <property name="defaultEncoding" value="utf-8"></property>   
+        <property name="maxUploadSize" value="10485760000"></property>  
+        <property name="maxInMemorySize" value="40960"></property>  
+   </bean>
+   
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>   
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/> 
+	
+	<!-- 国际化 -->
+	<!-- 资源文件绑定器 -->           
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">                   
+		<property name="basename" value="messages" />                 
+		<property name="useCodeAsDefaultMessage" value="true" />         
+	</bean>
+	
+	
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+	<!--	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />-->
+</beans>  

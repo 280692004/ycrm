@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" 
+	   xmlns:beans="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       					   http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+ 
+ 	<global-method-security secured-annotations="enabled"/>
+	<http pattern="/**/*.jsp" security="none" />
+	<http pattern="/**/*.jpg" security="none" />
+	<http pattern="/**/*.png" security="none" />
+	<http pattern="/**/*.gif" security="none" />
+	<http pattern="/**/*.ico" security="none" />
+	<http pattern="/**/*.css" security="none" />
+	<http pattern="/**/*.js" security="none" />
+	<http pattern="/**/*.ttf" security="none" />
+	<http pattern="/**/*.woff" security="none" />
+	<http pattern="/**/*.woff2" security="none" />
+	<http pattern="/**/*.json" security="none" />
+	<http pattern="/**/*.eot" security="none" />
+	<http pattern="/**/*.svg" security="none" />
+	<http pattern="/i18n/*.properties" security="none" />
+	<http pattern="/iczoom/common/common/*.html" security="none" />
+	<http pattern="/iczoom/common/member/*.html" security="none" />
+	<http pattern="/*.html" security="none" />
+	<http pattern="/" security="none" />
+	<http pattern="/getLoginError.action" security="none" />
+    <http pattern="/sitemap/*.xml" security="none" />
+ 	  <debug/>  
+ 	  <!-- 开启默认的拦截器 -->
+ 	  <http entry-point-ref="loginEntryPoint">
+ 	  		<!--替换默认的LoginFilter-->
+ 	  		<custom-filter ref="customLogoutFilter" position="LOGOUT_FILTER"/>
+ 	  		<!--替换默认的LoginFilter-->
+ 	  		<custom-filter ref="customLoginFilter" position="FORM_LOGIN_FILTER" /> 	  		
+			<session-management invalid-session-url="/logout" />
+			<custom-filter ref="customeSecurityFilter"   after="FILTER_SECURITY_INTERCEPTOR"/>
+ 	  </http>
+
+ 	  <beans:bean id="loginEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+ 	   		<!-- 默认登录页的url -->
+ 	     	<beans:constructor-arg value="/index.html"></beans:constructor-arg>
+ 	  </beans:bean>
+ 	  
+ 	  <beans:bean id="customLoginFilter" class="com.thesys.common.security.token.CustomLoginFilter">
+ 	       <!-- 校验登录是否有效的虚拟url -->
+ 	       <beans:property name="filterProcessesUrl" value="/checklogin" />
+ 	       <beans:property name="authenticationManager" ref="myAuthenticationManager" />
+ 	       <beans:property name="usernameParameter" value="name" />
+ 	       <beans:property name="passwordParameter" value="password" />
+ 	       <beans:property name="authenticationSuccessHandler">
+ 	            <!-- 自定义登录成功后的处理handler -->
+ 	             <beans:bean class="com.thesys.common.security.handler.CustomLoginHandler">
+ 	                 <!-- 登录成功后的默认url -->
+ 	                  <beans:property name="defaultTargetUrl" value="/getCurrentLoginedUser.action" />
+ 	             </beans:bean>
+ 	       </beans:property>
+ 	       <beans:property name="authenticationFailureHandler">
+ 	             <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+ 	             	<!-- 登录失败后的默认Url -->
+ 	             	<beans:property  name="defaultFailureUrl" value="/getLoginError.action" />
+ 	             </beans:bean>
+ 	       </beans:property>
+ 	  </beans:bean>
+ 	  
+ 	  <beans:bean id="customLogoutFilter" class="com.thesys.common.security.token.CustomLogoutFilter">
+ 	  	 <!-- 处理退出的虚拟url -->
+ 	  	 <beans:property name="filterProcessesUrl" value="/logout" />
+ 	  	 <!-- 退出处理成功后的默认显示url -->
+         <beans:constructor-arg index="0" value="/" />
+         <beans:constructor-arg index="1">
+             <!-- 退出成功后的handler列表 -->
+             <beans:array>
+                 <beans:bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+                 <!-- 加入了开发人员自定义的退出成功处理 -->
+                 <beans:bean id="customLogoutSuccessHandler" class="com.thesys.common.security.handler.CustomLogoutHandler" />
+             </beans:array>
+         </beans:constructor-arg>	  	 
+ 	 </beans:bean>
+ 	  	  
+ 	 <!-- 认证过滤器 -->
+   	 <beans:bean id="customeSecurityFilter" class="com.thesys.common.security.interceptor.MyFilterSecurityInterceptor"> 
+   	  	<!-- 用户拥有的权限 -->    
+        <beans:property name="authenticationManager" ref="myAuthenticationManager" />   
+        <!-- 用户是否拥有所请求资源的权限 -->  
+        <beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
+        <!-- 资源与权限对应关系 -->     
+        <beans:property name="securityMetadataSource" ref="mySecurityMetadataSource" />   
+     </beans:bean> 
+ 	 <!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源。11/3/23 -->
+     <beans:bean id="myAccessDecisionManagerBean" class="com.thesys.common.security.decisionmanager.MyAccessDescisionManager">
+     </beans:bean>
+ 	 <beans:bean id="mySecurityMetadataSource" class="com.thesys.common.security.decisionmanager.MySecurityMetadataSource">   
+  	 </beans:bean>     
+           	  
+ 	  <!-- 权限管理者 -->
+ 	  <authentication-manager alias="myAuthenticationManager">
+ 	  		<!-- 权限提供者 -->
+ 	  		<authentication-provider ref="daoAuthenticationProvider" />
+ 	  </authentication-manager>
+ 	  
+ 	  
+ 	  <beans:bean id="daoAuthenticationProvider" class="com.thesys.common.security.provider.MyDaoAuthenticationProvider">
+	  		<beans:property name="userDetailsService" ref="securityService" /> 
+	  		<beans:property name="PasswordEncoder" ref="md5PasswordEncoder" />
+  	  </beans:bean>  	   
+  	  <beans:bean id="md5PasswordEncoder" class="com.thesys.common.security.provider.MyMd5PasswordEncoder" />
+	  <!--  this voter will have the default attributes--> 
+  	  <beans:bean id="authenticatedVoter" class="org.springframework.security.access.vote.AuthenticatedVoter" /> 
+	  <beans:bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter">
+  			<beans:property name="rolePrefix" value="" /> 
+  	  </beans:bean>
+	  <beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+	  		<beans:property name="decisionVoters">
+				<beans:list>	
+					<beans:ref bean="roleVoter" />
+					<beans:ref bean="authenticatedVoter" />
+					<!---->
+				</beans:list>
+	  		</beans:property>
+  	  </beans:bean>
+</beans:beans>
