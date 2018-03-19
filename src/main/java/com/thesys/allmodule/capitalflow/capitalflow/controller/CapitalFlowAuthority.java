@@ -20,7 +20,7 @@ public class CapitalFlowAuthority extends BaseIcSuppAuthority {
 	public static String MODULE_CODE = "capitalFlow";
 	
 	/**
-	 * 初始化按钮 
+	 * 初始化按钮
 	 * @param object
 	 * @return
 	 */
