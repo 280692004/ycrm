@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
+import com.thesys.architecture.core.util.CusAccessObjectUtil;
 import com.thesys.base.core.util.DateUtil;
 import com.thesys.core.filter.SessionListener;
 import com.thesys.core.util.UserContainerSessionUtil;
@@ -28,13 +29,24 @@ public class CustomLoginHandler extends SavedRequestAwareAuthenticationSuccessHa
 		UserContainerSessionUtil.getOnlineMemberIds().add(UserContainerSessionUtil.getAclUser().getId().toString());//记录在线用户Id
 		//记录用户实际登录时间非访问时间
 		HttpSession session = request.getSession();
+		//当前登陆的Ip
+		String currentIp = CusAccessObjectUtil.getIpAddress(request);
+		//访问的浏览器类型，设置同一个浏览器可共用session,如果不同一种浏览器且为用一个版本时，会踢掉之前的账号
+		String currentAgent = request.getHeader("USER-AGENT"); 
 		
-		String userid = UserContainerSessionUtil.getAclUser().getId().toString();  
+		String userid = UserContainerSessionUtil.getAclUser().getId().toString(); 
         if(SessionListener.sessionContext.getSessionMap().get(userid)!=null){  
+        	
+        	HttpSession userSession=(HttpSession)SessionListener.sessionContext.getSessionMap().get(userid);  
+        	//如果跟已经登陆的账号ip及使用的浏览器一致的情况 不注销
+        	String oldAgent = (String) userSession.getAttribute(userid.concat("agent"));
+        	String oldIp = (String) userSession.getAttribute(userid.concat("ip"));
+        	if(currentAgent.equals(oldAgent) && currentIp.equals(oldIp)){
+        		return;
+        	}
+        	
         	MessageResultDto sendData = new MessageResultDto(DwrSendTypeEnum.SENDTYPE_COMPULSORYDOWNLINE.getSendType(), DwrSendTypeEnum.SENDTYPE_COMPULSORYDOWNLINE.getSendName(), DateUtil.format(new Date(),DateUtil.C_TIME_MM_DD_MM));
         	DwrSendMessageUtil.sendMessageThisUser(UserContainerSessionUtil.getAclUser().getName(), sendData);
-        	
-            HttpSession userSession=(HttpSession)SessionListener.sessionContext.getSessionMap().get(userid);  
             //注销在线用户  
             userSession.invalidate();   
             SessionListener.sessionContext.getSessionMap().remove(userid);  
@@ -44,6 +56,8 @@ public class CustomLoginHandler extends SavedRequestAwareAuthenticationSuccessHa
         } else {  
             // 根据当前sessionid 取session对象。 更新map key=用户名 value=session对象 删除map  
             SessionListener.sessionContext.getSessionMap().put(userid,session);  
+            session.setAttribute(userid.concat("agent"), currentAgent);
+            session.setAttribute(userid.concat("ip"), currentIp);
             SessionListener.sessionContext.getSessionMap().remove(session.getId());  
         }
         
