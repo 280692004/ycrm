@@ -1,4 +1,31 @@
 var var_action_url ="/allmodule/capitalflow/capitalflow/";
+
+//日期范围限制
+var start = {
+    elem: '#start',
+    format: 'YYYY/MM/DD',
+    min: '2018-01-01 00:00:00', //设定最小日期为当前日期 laydate.now()
+    max: '2099-06-16 23:59:59', //最大日期
+    istime: true,
+    istoday: false,
+    choose: function (datas) {
+        end.min = datas; //开始日选好后，重置结束日的最小日期
+        end.start = datas //将结束日的初始值设定为开始日
+    }
+};
+var end = {
+    elem: '#end',
+    format: 'YYYY/MM/DD',
+    min: '2018-01-01 00:00:00',
+    max: '2099-06-16 23:59:59',
+    istime: true,
+    istoday: false,
+    choose: function (datas) {
+        start.max = datas; //结束日选好后，重置开始日的最大日期
+    }
+};
+laydate(start);
+laydate(end);
 /**
  * 当前gridtable句柄
  */
@@ -208,31 +235,104 @@ function doOpOpenEditWind(){
 	$("#varIframeIndex").val(index);
 }
 
+/**
+ * 打印pdf 
+ */
+function doOpexportPdf(){
+	alert('打印pdf');
+	//提交数据
+	var _url = var_action_url + "downloadCapitalFlowForPdf.action";
+	$.ajax({
+        url: _url,
+        type: "get",
+        contentType : 'application/json;charset=utf-8', //设置请求头信息
+        dataType:"json",
+        data: getFormToParam('searchForm'),            //将Json对象序列化成Json字符串，toJSON()需要引用jquery.json.min.js
+        success: function(data){
+            parent.layer.msg(data.message, {icon: 6});
+        },
+        error: function(res){
+            parent.layer.msg('打印失败', {icon: 5});
+        }
+    });
+}
+
+/**
+ * 数据导入
+ */
+function doOpimport(){
+	alert('数据导入');
+	//提交数据
+	var _url = var_action_url + "doOpexportPdf.action";
+	$.ajax({
+        url: _url,
+        type: "get",
+        contentType : 'application/json;charset=utf-8', //设置请求头信息
+        dataType:"json",
+        data: getFormToParam('searchForm'),            //将Json对象序列化成Json字符串，toJSON()需要引用jquery.json.min.js
+        success: function(data){
+            parent.layer.msg(data.message, {icon: 6});
+        },
+        error: function(res){
+            parent.layer.msg('打印失败', {icon: 5});
+        }
+    });
+}
+
+/**
+ * 数据导出
+ */
+function doOpexportExcel(){
+	alert('数据导入');
+	//提交数据
+	var _url = var_action_url + "exportCapitalFlowForExcel.action";
+	$.ajax({
+        url: _url,
+        type: "get",
+        contentType : 'application/json;charset=utf-8', //设置请求头信息
+        dataType:"json",
+        data: getFormToParam('searchForm'),            //将Json对象序列化成Json字符串，toJSON()需要引用jquery.json.min.js
+        success: function(data){
+            parent.layer.msg(data.message, {icon: 6});
+        },
+        error: function(res){
+            parent.layer.msg('打印失败', {icon: 5});
+        }
+    });
+}
 
 
-//日期范围限制
-var start = {
-    elem: '#start',
-    format: 'YYYY/MM/DD',
-    min: '2018-01-01 00:00:00', //设定最小日期为当前日期 laydate.now()
-    max: '2099-06-16 23:59:59', //最大日期
-    istime: true,
-    istoday: false,
-    choose: function (datas) {
-        end.min = datas; //开始日选好后，重置结束日的最小日期
-        end.start = datas //将结束日的初始值设定为开始日
-    }
-};
-var end = {
-    elem: '#end',
-    format: 'YYYY/MM/DD',
-    min: '2018-01-01 00:00:00',
-    max: '2099-06-16 23:59:59',
-    istime: true,
-    istoday: false,
-    choose: function (datas) {
-        start.max = datas; //结束日选好后，重置开始日的最大日期
-    }
-};
-laydate(start);
-laydate(end);
+
+/**
+ *上传文件 
+ */
+function doOpupLoadFile(objId){
+	alert('上传文件');
+	//提交数据
+	var _url = var_action_url + "upLoadCapitalFlowFile.action?id="+objId;
+	$.ajax({
+        url: _url,
+        type: "get",
+        success: function(data){
+            parent.layer.msg(data.message, {icon: 6});
+        },
+        error: function(res){
+            parent.layer.msg('上传失败', {icon: 5});
+        }
+    });
+}
+
+function downLoadFile(objId){
+	alert('下载附件');
+	//提交数据
+	var _url = var_action_url + "downloadCapitalFlowFile.action?id="+objId;
+	$.ajax({
+        url: _url,
+        success: function(data){
+            parent.layer.msg(data.message, {icon: 6});
+        },
+        error: function(res){
+            parent.layer.msg('下载失败', {icon: 5});
+        }
+    });
+}

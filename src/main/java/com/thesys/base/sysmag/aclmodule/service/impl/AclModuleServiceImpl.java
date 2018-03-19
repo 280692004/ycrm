@@ -73,13 +73,13 @@ public class AclModuleServiceImpl extends BaseServiceImpl<AclModule> implements 
 
 
 	@Override
-	public void updateAclModuleStatus(String code,IEvent event){
+	public void updateAclModuleStatus(Integer id,IEvent event){
 		
-		AclModule found = this.findAclModulebycode(code);	
+		AclModule found = this.findEntityById(id.toString());	
 		AclModuleStateOwner stateOwner= createStateOwner(found);	
 		String status=stateOwner.doOpValidator(event);
 		
-		this.getMapper().updateAclModuleStatus(code, status);
+		this.getMapper().updateAclModuleStatus(found.getId(), status);
 	}
 	
 	@Override

@@ -20,10 +20,10 @@ public interface AclModuleService extends BaseService<AclModule> {
 	public JqGridResultDataDto findFlexiPageAclModules(AclModule aclModule,Integer pageSize, Integer pageNumber);
 	/**
 	 * 更新模块的状态
-	 * @param code
+	 * @param id
 	 * @param event
 	 */
-	public void updateAclModuleStatus(String code,IEvent event);
+	public void updateAclModuleStatus(Integer id,IEvent event);
 	/**
 	 * 根据模块code 查询模块
 	 * @param code

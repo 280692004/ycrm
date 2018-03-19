@@ -81,29 +81,34 @@ function doAddOtherOperationButton(rowDataId){
 	if(isEmptyObject(buts) || isEmptyObject(buts[rowDataId])){
 		return;
 	}	
-		
-	var commonbuts = buts[rowDataId].left;
-	var otherbuts = buts[rowDataId].right;
 	//默认隐藏
 	$("#edit_table_list").hide();
     $("#del_table_list").hide();
-	//修改
-	if(-1 != $.inArray("update", commonbuts)){
-		$("#edit_table_list").show();
+    
+	var commonbuts = buts[rowDataId].left;
+	if(!isEmpty(commonbuts)){
+		//修改
+		if(-1 != $.inArray("update", commonbuts)){
+			$("#edit_table_list").show();
+		}
+		//删除
+		if(-1 != $.inArray("delete", commonbuts)){
+			$("#del_table_list").show();
+		}
 	}
-	//删除
-	if(-1 != $.inArray("delete", commonbuts)){
-		$("#del_table_list").show();
-	}
-	var operationButtonhtml = '';
-    //funName:函数名称 如确认 就是conFirmObj   cname:界面显示按钮名称 如 确认    iconName 按钮中的图标 
-    $(otherbuts).each(function(){  
-        operationButtonhtml = '<button type="button" onclick="'+this.funName+'('+rowDataId+')" class="btn btn-info" >'+ this.cname 
-		+ '：<i class="glyphicon '+ this.iconName+'" aria-hidden="true"></i></button>';
-    });     
- 	if(!isEmpty(operationButtonhtml)){
-		$("#var_otherOperationButton").html(operationButtonhtml);
-	}
+	
+	var otherbuts = buts[rowDataId].right;
+	if(!isEmpty(otherbuts)){
+		var operationButtonhtml = '';
+	    //funName:函数名称 如确认 就是conFirmObj   cname:界面显示按钮名称 如 确认    iconName 按钮中的图标 
+	    $(otherbuts).each(function(){  
+	        operationButtonhtml += '<button type="button" onclick="'+this.funName+'('+rowDataId+')" class="btn btn-outline btn-default" style="margin-right: 3px;">'+ this.cname 
+			+ '：<i class="glyphicon '+ this.iconName+'" aria-hidden="true"></i></button>';
+	    });     
+	 	if(!isEmpty(operationButtonhtml)){
+			$("#var_otherOperationButton").html(operationButtonhtml);
+		}
+ 	}
 	 
 }
 

@@ -31,8 +31,8 @@ public class CapitalFlowAuthority extends BaseIcSuppAuthority {
 	//单据状态变更条件
 	public static Map<String, String> statusFilterMap = new HashMap<String, String>();
 	static {
-		statusFilterMap.put(BaseIcSuppAuthorityConText.COMMON_EVENT_DELETE, ClassDataManager.STATE_N);
-		statusFilterMap.put(BaseIcSuppAuthorityConText.COMMON_EVENT_UPDATE, ClassDataManager.STATE_N);
+		statusFilterMap.put(BaseIcSuppAuthorityConText.COMMON_EVENT_DELETE, BaseIcSuppAuthorityConText.FILTER_STATUS_ALL);
+		statusFilterMap.put(BaseIcSuppAuthorityConText.COMMON_EVENT_UPDATE, BaseIcSuppAuthorityConText.FILTER_STATUS_ALL);
 		statusFilterMap.put(BaseIcSuppAuthorityConText.COMMON_EVENT_CANCEL, BaseIcSuppAuthorityConText.FILTER_STATUS_ALL);
 		
 		statusFilterMap.put(BaseIcSuppAuthorityConText.COMMON_EVENT_IMPORT, BaseIcSuppAuthorityConText.FILTER_STATUS_ALL);

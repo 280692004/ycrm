@@ -85,9 +85,15 @@ public class BaseIcSuppAuthority {
 			List<ButtonDto> rowbuts = new ArrayList<ButtonDto>();
 			for (AclButton aclButton : currentHasButs) {
 				String buttoncode = aclButton.getCode();
-				String status = ValidateUtil.format("status", entity);
+				String status = "N";
+				try {
+					status = ValidateUtil.format("status", entity);
+				} catch (Exception e) {
+					// 处理部分实体不需要状态
+				}
+				
 				if(commonbutsMap.containsKey(buttoncode)){
-					if(statusFilterMap.containsKey(buttoncode) && statusFilterMap.get(buttoncode).equals(status)){
+					if(statusFilterMap.containsKey(buttoncode) && (statusFilterMap.get(buttoncode).equals(status)||statusFilterMap.get(buttoncode).equals(BaseIcSuppAuthorityConText.FILTER_STATUS_ALL))){
 						commonbuts.add(buttoncode);
 					}
 					continue;
@@ -106,7 +112,7 @@ public class BaseIcSuppAuthority {
 				
 				Boolean hasRight = hasRight(moduleCode, buttoncode);
 				if(hasRight){
-					if(statusFilterMap.containsKey(buttoncode) && statusFilterMap.get(buttoncode).equals(status)){
+					if(statusFilterMap.containsKey(buttoncode) && (statusFilterMap.get(buttoncode).equals(status)||statusFilterMap.get(buttoncode).equals(BaseIcSuppAuthorityConText.FILTER_STATUS_ALL))){
 						ButtonDto butoon = new ButtonDto(aclButton.getCode(), aclButton.getCname(), aclButton.getIconName());
 						rowbuts.add(butoon);
 					}

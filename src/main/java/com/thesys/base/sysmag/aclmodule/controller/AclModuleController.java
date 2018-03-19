@@ -158,7 +158,7 @@ public class AclModuleController extends BaseController<AclModule>{
 	 */
 	@RequestMapping(value="/confirmAclModule")
 	public @ResponseBody ResultDataDto confirm(@ModelAttribute("aclModule")AclModule aclModule){
-		aclModuleService.updateAclModuleStatus(aclModule.getCode(),AclModuleEvent.CONFIRM);		
+		aclModuleService.updateAclModuleStatus(aclModule.getId(),AclModuleEvent.CONFIRM);		
 		return ResultDataDto.addUpdateSuccess();
 	}
 	
@@ -169,7 +169,7 @@ public class AclModuleController extends BaseController<AclModule>{
 	 */
 	@RequestMapping(value="/antiConfirmAclModule")
 	public @ResponseBody ResultDataDto anticonfirm(@ModelAttribute("aclModule")AclModule aclModule){
-		aclModuleService.updateAclModuleStatus(aclModule.getCode(),AclModuleEvent.ANTICONFIRM);		
+		aclModuleService.updateAclModuleStatus(aclModule.getId(),AclModuleEvent.ANTICONFIRM);		
 		return ResultDataDto.addUpdateSuccess();
 	}
 	

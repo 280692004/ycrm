@@ -97,8 +97,8 @@ public class CapitalFlowController extends BaseController<CapitalFlow> {
 	 * @return
 	 */
 	
-	@RequestMapping("/downloadExcelTemplate")
-	public @ResponseBody void downloadExcelTemplate(HttpServletResponse httpServletResponse){		
+	@RequestMapping("/doOpexportExcel")
+	public @ResponseBody void doOpexportExcel(HttpServletResponse httpServletResponse){		
 		
 		String outPutFileName = CAPITALFLOW_EXPORTEMPLATEFILE_PATHNAME;
 		FileDownLoadUtil.downloadFile("application/octet-stream", outPutFileName, new File(FileDownLoadUtil.getExcelTemplatePath()+"capitalflow/"+outPutFileName),httpServletResponse);		

@@ -21,7 +21,7 @@ public interface AclModuleMapper extends BaseMapper<AclModule> {
 	 * @param code
 	 * @param status
 	 */
-	public void updateAclModuleStatus(@Param("code")String code,@Param("status")String status);
+	public void updateAclModuleStatus(@Param("id")Integer id,@Param("status")String status);
 	/**
 	 * 计算制定父模块下面的最新下一个序号
 	 * @param parentid

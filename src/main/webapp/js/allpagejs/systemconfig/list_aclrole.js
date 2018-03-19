@@ -328,7 +328,7 @@ function doOpInitThisAclModuleButs(){
  */
 function doOpInitAclModuleButInput(obj){
 	var varIdFlag = obj.id +'_'+obj.code;
-	var aAclModuleButInputhtml = '<div class="col-sm-2"><input class="i-checks" type="checkbox" onclick="funValidateIsSelectAllAclModuleButs()" k="'+ 
+	var aAclModuleButInputhtml = '<div class="col-sm-3"><input class="i-checks" type="checkbox" onclick="funValidateIsSelectAllAclModuleButs()" k="'+ 
 	obj.id +'" id="'+ varIdFlag +'"';
 	if(obj.actionmethodright){
 		aAclModuleButInputhtml += " checked = 'checked' ";

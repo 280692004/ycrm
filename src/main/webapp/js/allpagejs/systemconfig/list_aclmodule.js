@@ -179,7 +179,7 @@ $(document).ready(function () {
  */
 function getNeedChangeFieldMap(){
 	needChangeFieldMap = {
-	    'parent.cname':'parent.id'
+	    'parent.cname':'parent_id'
 	};
 }
 	
