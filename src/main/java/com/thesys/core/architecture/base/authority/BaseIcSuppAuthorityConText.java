@@ -19,7 +19,7 @@ public class BaseIcSuppAuthorityConText {
 	public static final String COMMON_EVENT_ANTICONFIRM = "anticonfirm";
 	//复核
 	public static final String COMMON_EVENT_CHECK = "check";
-	//反复核
+	//反复核  
 	public static final String COMMON_EVENT_ANTICHECK = "anticheck";
 	//取消 
 	public static final String COMMON_EVENT_CANCEL = "cancel";
