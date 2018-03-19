@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesys.base.sysmag.aclrole.dao.AclRoleMapper">
+   <resultMap type="AclRole" id="AclRoleResultMap">
+		<id column="id" property="id"/>
+		<result column="version" property="version"/>
+		<result column="status" property="status"/>
+		<result column="code" property="code"/>
+		<result column="cname" property="cname"/>
+		<result column="remark" property="remark"/> 
+		      
+   </resultMap>
+   
+   <select id="findAclRoleByCName" parameterType="String" resultMap="AclRoleResultMap">
+       select * from base_aclrole where cname=#{cname};
+   </select>
+   
+   <sql id="commonWhereSql">
+   		<trim prefix="where" prefixOverrides="and|or">
+		    <if test="aclRole.cname != null and aclRole.cname != ''">
+		    	a.cname like concat('%',#{aclRole.cname},'%')
+		    </if>	
+		    <if test="aclRole.code != null and aclRole.code != ''">
+		    	and a.code like concat('%',#{aclRole.code},'%')
+		    </if>	    		   
+		    <if test="aclRole.status != null and aclRole.status != ''">
+		    	and a.status = #{aclRole.status}
+		    </if>	
+		</trim>   		
+   </sql>
+   
+	<select id="findFlexiPageAclRoleCount" parameterType="AclRole" resultType="Long">
+		select count(0) from base_aclrole a 
+		<include refid="commonWhereSql"></include>	
+	</select>		
+	<select id="findFlexiPageAclRoles"  resultMap="AclRoleResultMap">
+	    select a.* from base_aclrole a 
+		<include refid="commonWhereSql"></include>	
+		order by lastModifyTime desc
+		limit #{flexiPageDto.seq},#{flexiPageDto.rp}	  	    
+	</select>   
+	
+	<select id="findAclRoleByCreateByAclUser" parameterType="AclUser" resultMap="AclRoleResultMap">
+		select a.* from base_aclrole a where createBy_id=#{aclUser.id} and status='Y';
+	</select>
+	
+	<update id="updateAclRoleStatus">
+	     update base_aclrole set status=#{status} where id=#{roleId};
+	</update>
+	<update id="logoutAclRole">
+		update base_aclrole set status='invalid',expirateDate=now() where id=#{roleId};
+	</update>
+	<update id="enableAclRole">
+		update base_aclrole set status='Y',expirateDate=null where id=#{roleId};
+	</update>
+</mapper>

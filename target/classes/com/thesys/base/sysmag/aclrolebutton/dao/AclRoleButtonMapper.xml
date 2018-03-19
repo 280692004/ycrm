@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesys.base.sysmag.aclrolebutton.dao.AclRoleButtonMapper">
+	<resultMap type="AclRoleButton" id="AclRoleButtonResultMap">
+		<id column="id" property="id"/>
+		<result column="version" property="version"/>
+		<result column="role_id" property="role_id"/>
+		<result column="module_id" property="module_id"/>
+		<result column="button_id" property="button_id"/>
+		<result column="permission" property="permission"/>	
+	</resultMap>
+	<resultMap type="AclModule" id="AclModuleResultMap">
+		<id column="id" property="id"/>
+		<result column="version" property="version"/>
+		<result column="parent_id" property="parent_id"/>
+		<result column="cname" property="cname"/>
+		<result column="code" property="code"/>
+		<result column="url" property="url"/>
+		<result column="orderNo" property="orderNo"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<select id="findAclRoleButton" parameterType="AclRoleButton" resultMap="AclRoleButtonResultMap">
+		select * from base_aclrolebutton where role_id=#{aclRoleButton.role_id} and button_id=#{aclRoleButton.button_id};
+	</select>
+
+	<select id="findModuleAclRoleButton" parameterType="AclRoleButton" resultMap="AclRoleButtonResultMap">
+		select * from base_aclrolebutton where role_id=#{aclRoleButton.role_id} and module_id=#{aclRoleButton.module_id};
+	</select>
+	
+	<select id="findEntityById" resultType="AclRoleButton">
+	    select * from base_aclrolebutton where id=#{id};
+	</select>
+	
+	<insert id="addAclRoleButton">
+	   insert into base_aclrolebutton(version,role_id,module_id,button_id,permission,createBy_id,createByName,createTime,lastModifyBy_id,lastModifyByName,lastModifyTime)values
+	   <foreach collection="details" item="detail" index="index" separator=",">
+ 			(0,#{detail.role_id},#{detail.module_id},#{detail.button_id},#{detail.permission},#{detail.createBy_id},#{detail.createByName},now(),#{detail.lastModifyBy_id},#{detail.lastModifyByName},now())	   
+	   </foreach>	
+	</insert>
+	
+	<delete id="deleteAclRoleButtonByButtonId">
+		delete from base_aclrolebutton where button_id=#{buttonId};
+	</delete>
+	<delete id="deleteByRoleIdAndModuleIdAndbutIds">
+		delete from base_aclrolebutton 
+			where role_id=#{aclroleId} and module_id=#{aclmoduleId} AND button_id in (${butIds});
+	</delete>
+	
+</mapper>

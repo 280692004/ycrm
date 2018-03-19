@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesys.base.basemanager.baseparameter.parameterbasebean.dao.ParameterBaseBeanMappper">
+	<resultMap type="ParameterBaseBean" id="ParameterBaseBeanResultMap">
+	<id column="id" property="id" />
+		<result column="uuid" property="uuid" />
+		<result column="naturalId" property="naturalId" />
+		<result column="version" property="version" />
+		<result column="createBy_id" property="createBy_id" />
+		<result column="createByName" property="createByName" />
+		<result column="createTime" property="createTime" />
+		<result column="lastModifyBy_id" property="lastModifyBy_id" />
+		<result column="lastModifyByName" property="lastModifyByName" />
+		<result column="lastModifyTime" property="lastModifyTime" />
+		<result column="parentCode" property="parentcode" />
+		<result column="dtype" property="dtype" />
+		<result column="code" property="code" />
+		<result column="cname" property="cname" />
+		<result column="status" property="status" />
+		<result column="remark" property="remark" />
+		<result column="level" property="level" /> 	
+		<result column="additionalCode" property="additionalCode" />
+		
+		<result column="dtypeName" property="dtypeName" />
+		<result column="parentName" property="parentName" />
+		
+	</resultMap>
+	
+	<!-- 根据ID查询参数 -->
+	<select id="findParameterBaseBeanById" resultMap="ParameterBaseBeanResultMap">
+		SELECT a.*,c.cname as dtypeName,b.cname as parentName 
+			FROM base_parameterbasebean a LEFT JOIN base_parameterbasebean b ON a.parentCode=b.code
+			LEFT JOIN base_parameterbasebeantype c ON a.dtype=c.dtype
+			where a.id=#{id};
+	</select>	
+	<!--更新判断约束前置条件-->
+	<select id="findCountByPropertyNeId"  resultType="Integer">
+		select count(*) from base_parameterbasebean
+		<trim prefix="where" prefixOverrides="and|or">
+		    <if test="parameterBaseBean.dtype != null and parameterBaseBean.dtype != ''">
+	    		dtype = #{parameterBaseBean.dtype}
+		    </if>
+		    <if test="parameterBaseBean.code != null and parameterBaseBean.code != ''">
+		    	and code=#{parameterBaseBean.code}
+		    </if>
+		    <if test="parameterBaseBean.cname != null and parameterBaseBean.cname != ''">
+	    		and cname = #{parameterBaseBean.cname}
+		    </if>
+		    <if test="parameterBaseBean.id != null and parameterBaseBean.id != ''">
+	    	  	and id !=#{parameterBaseBean.id}
+		    </if>
+		</trim>   
+	</select>
+	
+	
+	<select id="findParameterBaseBeanByDType" resultType="ParameterBaseBean">
+		select * from base_parameterbasebean where dtype=#{dtype} and status='Y' ORDER BY level
+	</select>
+	
+	<select id="findParameterBaseBeanByDtypeAndCode" parameterType="String" resultType="ParameterBaseBean">
+		select * from base_parameterbasebean where dtype=#{dtype} and code=#{code} and status='Y'
+	</select>	
+	
+	<sql id="commonWhereSql">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="parameterBaseBean.parentcode != null and parameterBaseBean.parentcode != ''">
+		    	a.parentCode = #{parameterBaseBean.parentcode}
+		    </if>
+		    <if test="parameterBaseBean.dtype != null and parameterBaseBean.dtype != ''">
+		    	and	a.dtype like concat('%',#{parameterBaseBean.dtype},'%')
+		    </if>
+		    <if test="parameterBaseBean.code != null and parameterBaseBean.code != ''">
+		    	and a.code=#{parameterBaseBean.code}
+		    </if>
+		    <if test="parameterBaseBean.cname != null and parameterBaseBean.cname != ''">
+	    		and a.cname like concat('%',#{parameterBaseBean.cname},'%')
+		    </if>
+		     <if test="parameterBaseBean.status != null and parameterBaseBean.status != ''">
+	    	  	and a.status=#{parameterBaseBean.status}
+		    </if>
+		</trim>  	  
+	</sql>
+	
+	<!-- 查询总页数 模糊-->
+	<select id="doOpFindCountByPageLike" resultType="Long">
+  		select count(*) from base_parameterbasebean a left join base_parameterbasebean b on b.code=a.parentCode
+		<include refid="commonWhereSql"></include>	    
+	</select>
+	<!-- 分页查询 -->
+	<select id="doOpFindByPageLike"  resultMap="ParameterBaseBeanResultMap">
+		SELECT a.*,c.cname as dtypeName,b.cname as parentName 
+			FROM base_parameterbasebean a LEFT JOIN base_parameterbasebean b ON a.parentCode=b.code
+			LEFT JOIN base_parameterbasebeantype c ON a.dtype=c.dtype
+		<include refid="commonWhereSql"></include>	
+		ORDER BY a.parentCode,a.level
+		limit #{flexiPageDto.seq},#{flexiPageDto.rp}
+	</select>
+	
+	<!--精确条件查询 无分页-->
+	<select id="findParameterBaseBeansByParamPrecise"  resultMap="ParameterBaseBeanResultMap">
+	 	SELECT a.*,c.cname as dtypeName,b.cname as parentName 
+			FROM base_parameterbasebean a LEFT JOIN base_parameterbasebean b ON a.parentCode=b.code
+			LEFT JOIN base_parameterbasebeantype c ON a.dtype=c.dtype
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="parameterBaseBean.parentcode != null and parameterBaseBean.parentcode != ''">
+		    	a.parentCode = #{parameterBaseBean.parentcode}
+		    </if>
+		
+		    <if test="parameterBaseBean.dtype != null and parameterBaseBean.dtype != ''">
+	    		and a.dtype = #{parameterBaseBean.dtype}
+		    </if>
+		    
+		    <if test="parameterBaseBean.code != null and parameterBaseBean.code != ''">
+		    	and a.code=#{parameterBaseBean.code}
+		    </if>
+		    
+		    <if test="parameterBaseBean.cname != null and parameterBaseBean.cname != ''">
+	    		and a.cname = #{parameterBaseBean.cname}
+		    </if>
+		    <if test="parameterBaseBean.status != null and parameterBaseBean.status != ''">
+	    	  	and a.status=#{parameterBaseBean.status}
+		    </if>
+		</trim>   
+	</select>
+	
+	<!-- 根据父参数的Id查询模块列表 -->
+	<select id="findParameterBaseBeanByParentCode" resultMap="ParameterBaseBeanResultMap">
+		select a.*,b.id as prtid,b.code as prtcode,b.cname as prtcname from base_parameterbasebean a left join base_parameterbasebean b on b.code=a.parentcode
+			where ifnull(a.parentCode,'') = #{parentCode} 
+			 <if test="dtype != null and dtype != ''">
+	    	  	and a.dtype=#{dtype}
+		    </if>
+			order by LEVEL asc;
+	</select>
+	
+	<select id="doOpCalNextSeq" resultType="Integer">
+	    select ifnull(max(ifnull(level,0)),0)+1 as nextseq from base_parameterbasebean 
+	    	where dtype = #{dtype} and ifnull(parentCode,'') = #{parentCode};
+	</select>
+	
+	<!-- 跟新参数状态 -->
+	<update id="updateParameterBaseBeanStatus">
+		update base_parameterbasebean set status = #{status} where id = #{id};
+	</update>
+
+</mapper>

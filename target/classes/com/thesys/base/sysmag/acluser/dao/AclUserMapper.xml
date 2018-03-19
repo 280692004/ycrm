@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thesys.base.sysmag.acluser.dao.AclUserMapper">
+	<resultMap type="AclUser" id="AclUserResultMap">
+		<id column="id" property="id"/>
+		<result column="version" property="version"/>
+		
+		<result column="name" property="name"/>
+		<result column="type" property="type"/>
+		
+		<result column="password" property="password"/>	
+		<result column="qq" property="qq"/>
+		<result column="phone" property="phone"/>
+		<result column="mobilePhone" property="mobilePhone"/>
+		<result column="imNumber" property="imNumber"/>		
+		<result column="email" property="email"/>
+		<result column="address" property="address"/>
+		<result column="avatarImage" property="avatarImage"/>
+		
+		<result column="status" property="status"/>
+		<result column="personName" property="personName"/>
+		<result column="status" property="status"/>
+		<result column="expireTime" property="expireTime"/>	
+		<result column="lastmodfypwddate" property="lastmodfypwddate"/>
+		<result column="activeday" property="activeday"/>	
+		<result column="remark" property="remark"/>		
+	</resultMap>
+	
+	<sql id="commonWhereSql">
+		<trim prefix="where" prefixOverrides="and|or">
+		    <if test="aclUser.name != null and aclUser.name != ''">
+		    	name like concat('%',#{aclUser.name},'%')
+		    </if>
+			<if test="aclUser.personName != null and aclUser.personName != ''">
+				and personName like concat('%',#{aclUser.personName},'%')
+			</if>		    
+		    <if test="aclUser.status != null and aclUser.status != ''">
+		    	and status=#{aclUser.status}
+		    </if>
+		    <if test="aclUser.type != null and aclUser.type != ''">
+		    	and type=#{aclUser.type}
+		    </if>
+		     <if test="aclUser.mobilePhone != null and aclUser.mobilePhone != ''">
+		    	and mobilePhone=#{aclUser.mobilePhone}
+		    </if>
+		     <if test="aclUser.email != null and aclUser.email != ''">
+		    	and email=#{aclUser.email}
+		    </if>
+		</trim> 
+	</sql>
+	
+	<select id="doOpFindByPageLike" resultMap="AclUserResultMap">
+		select * from base_acluser
+		<include refid="commonWhereSql"></include>
+		order by LastModifyTime desc
+		LIMIT #{flexiPageDto.seq},#{flexiPageDto.rp}    	
+	</select>
+	
+	<select id="doOpFindCountByPageLike" resultType="Long">
+		select count(*) from base_acluser
+		<include refid="commonWhereSql"></include>
+	</select>
+	
+	<select id="findAclUserById" resultMap="AclUserResultMap">
+		select * from base_acluser where id=#{id}
+	</select>
+	<select id="findAclUserByName"  resultMap="AclUserResultMap">
+		select * from base_acluser where name=#{name};
+	</select>
+	<select id="findLoginAclUserByName" resultMap="AclUserResultMap">
+		select * from base_acluser where name=#{name} and expireTime is null;
+	</select>
+	<select id="findAclUserByPersonName" resultMap="AclUserResultMap">
+		select * from base_acluser where personName=#{name};
+	</select>
+	<select id="findAclUserCountCount" resultType="Integer">
+		select count(*) from base_acluser where name=#{name} and id != #{aclUserId};
+	</select>
+	
+	
+	<update id="updateAclUserStatus">
+		update base_acluser set status = #{status},lastModifyTime=now() where id = #{id};
+	</update>
+	<update id="updatePassWord">
+		update base_acluser set password=#{password},lastmodfypwddate=now() where name=#{userName}
+	</update>
+	<update id="logoutAclUser">
+		update base_acluser set status = 'invalid',expireTime=now(),lastModifyTime=now()  where id = #{id};
+	</update>
+	<update  id="enableAclUser">
+		update base_acluser set status = 'Y',expireTime=null,lastModifyTime=now()  where id = #{id};
+	</update>
+</mapper>
